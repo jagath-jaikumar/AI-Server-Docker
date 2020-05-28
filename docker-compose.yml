@@ -1,0 +1,58 @@
+version: "3"
+
+services:
+  rabbitmq:
+    image: rabbitmq
+    command: rabbitmq-server
+    expose:
+      - "5672"
+      - "15672"
+    healthcheck:
+      test: [ "CMD", "nc", "-z", "localhost", "5672" ]
+      interval: 10s
+      timeout: 10s
+      retries: 5
+
+
+  imagedb:
+    build: ./Database/imagedb/
+    container_name: imagedb
+    ports: ["5000"]
+    networks:
+      - network
+    volumes:
+      - image_data:/var/lib/images:rw
+
+
+
+  dispatch:
+    build: ./Dispatcher/
+    ports:
+      - "5000:5000"
+    networks:
+      - network
+    restart: on-failure
+    depends_on:
+      - imagedb
+      - rabbitmq
+
+
+  object_detection:
+    build: ./MachineLearning/object_detection
+    restart: on-failure
+    networks:
+      - network
+    depends_on:
+      - imagedb
+      - rabbitmq
+    volumes:
+      - image_data:/var/lib/images:rw
+
+      
+
+networks:
+  network: {}
+
+
+volumes:
+  image_data:
