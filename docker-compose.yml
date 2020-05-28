@@ -18,6 +18,7 @@ services:
 
 
   imagedb:
+    image: 'imagedb'
     build: ./Database/imagedb/
     container_name: imagedb
     ports: ["5000"]
@@ -29,6 +30,7 @@ services:
 
 
   dispatch:
+    image: 'dispatch'
     container_name: dispatcher
     build: ./Dispatcher/
     ports:
@@ -42,6 +44,7 @@ services:
 
 
   object_detection:
+    image: 'obj-detection'
     container_name: obj_detection
     build: ./MachineLearning/object_detection
     restart: on-failure

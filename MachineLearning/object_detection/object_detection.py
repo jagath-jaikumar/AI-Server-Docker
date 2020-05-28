@@ -48,9 +48,7 @@ def predict(fpath):
 
 
 ################ pika
-from pika_listener import QueueListener
-
-Q = QueueListener(predict)
-
 if __name__ == "__main__":
+    from pika_listener import QueueListener
+    Q = QueueListener(predict)
     Q.run()
