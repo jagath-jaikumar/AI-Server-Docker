@@ -15,4 +15,4 @@ COPY imagenet_classes.txt object_detection.py pika_listener.py ./
 
 ADD https://download.pytorch.org/models/alexnet-owt-4df8aa71.pth /root/.cache/torch/checkpoints/
 
-CMD [ "python3", "-u","pika_listener.py" ]
+CMD [ "python3", "-u","object_detection.py" ]

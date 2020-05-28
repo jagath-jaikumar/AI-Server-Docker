@@ -2,6 +2,7 @@ from torchvision import models, transforms
 import torch
 from image_encoder.image_encoder import decode
 import json
+import requests
 
 alexnet = models.alexnet(pretrained=True)
 alexnet.eval()
@@ -23,7 +24,9 @@ transform = transforms.Compose([
 
 
 def predict(fpath):
-    data = json.loads(fpath)
+    data = {}
+    with open(fpath) as json_file:
+        data = json.load(json_file)
     img = decode(data["image"])
     img_t = transform(img)
     batch_t = torch.unsqueeze(img_t, 0)
@@ -35,4 +38,19 @@ def predict(fpath):
     for idx in indices[0][:5]:
         output[classes[idx]] = percentage[idx].item()
 
-    return {"result":output}
+    print(output)
+
+    to_send = {"fpath":fpath, "result":{"object_detetction_results":output}}
+    requests.post('http://imagedb:5000/append',json = to_send)
+
+    return to_send
+
+
+
+################ pika
+from pika_listener import QueueListener
+
+Q = QueueListener(predict)
+
+if __name__ == "__main__":
+    Q.run()

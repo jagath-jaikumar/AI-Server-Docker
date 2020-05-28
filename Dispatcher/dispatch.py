@@ -1,5 +1,14 @@
 from flask import Flask, request, make_response, jsonify
 import requests
+import pika
+
+
+
+
+connection = pika.BlockingConnection(pika.ConnectionParameters(host='rabbitmq'))
+channel = connection.channel()
+
+
 
 app = Flask(__name__)
 
@@ -8,12 +17,30 @@ def save_dispatch():
     packet = request.get_json()
     for k,v in packet.items():
         if k == "image":
-            r = requests.post('http://imagedb:5000',json = packet)
-            metadata_file = r.text
+            metadata_file = requests.post('http://imagedb:5000',json = packet).text
+            post_to_image_queue(metadata_file)
+            return make_response(jsonify({"status":"queued", "file":metadata_file}), 200)
 
-            
+    return make_response(jsonify({"status":"broken"}), 500)
 
-    return make_response(jsonify({"status":"queued", "file":r.text}), 200)
+
+
+
+def post_to_image_queue(body):
+    channel.exchange_declare(exchange='fpaths',exchange_type='fanout')
+    channel.basic_publish(exchange='fpaths', routing_key='ignored_for_fanout_exchanges', body=body)
+    print(" [x] Sent {}".format(body))
+
+
+
+
+
+
+@app.route("/get", methods = ["GET"])
+def get_data():
+    data = requests.get('http://imagedb:5000/get')
+    return data.text
+
 
 
 

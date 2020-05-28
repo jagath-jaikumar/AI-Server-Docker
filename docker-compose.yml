@@ -13,6 +13,9 @@ services:
       timeout: 10s
       retries: 5
 
+    networks:
+      - network
+
 
   imagedb:
     build: ./Database/imagedb/
@@ -26,6 +29,7 @@ services:
 
 
   dispatch:
+    container_name: dispatcher
     build: ./Dispatcher/
     ports:
       - "5000:5000"
@@ -38,6 +42,7 @@ services:
 
 
   object_detection:
+    container_name: obj_detection
     build: ./MachineLearning/object_detection
     restart: on-failure
     networks:
@@ -48,7 +53,7 @@ services:
     volumes:
       - image_data:/var/lib/images:rw
 
-      
+
 
 networks:
   network: {}

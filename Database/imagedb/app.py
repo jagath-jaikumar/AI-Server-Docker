@@ -1,6 +1,7 @@
-from flask import Flask, request
+from flask import Flask, request, jsonify
 from image_encoder.image_encoder import decode
 import json
+import os
 
 app = Flask(__name__)
 saved = []
@@ -15,14 +16,42 @@ def save_data():
 
     if not fname in saved:
         metadata_file = '/var/lib/images/' + str(counter) + ".txt"
-        with open(metadata_file, 'a') as outfile:
+        with open(metadata_file, 'w') as outfile:
             json.dump(data, outfile)
+            outfile.write(os.linesep)
 
         saved.append(fname)
         counter+=1
+        return metadata_file
+
+    return "already queued"
 
 
-    return metadata_file
+
+@app.route("/append", methods = ["POST"])
+def add_data():
+    data = request.get_json()
+    file = data["fpath"]
+    content = data["result"]
+
+    with open(file, 'a') as f:
+        json.dump(content, f)
+        f.write(os.linesep)
+
+    return "data added"
+
+
+
+@app.route("/get", methods = ["GET"])
+def get_data():
+    files = os.listdir('/var/lib/images/')
+    data = {}
+    for filename in files:
+        record = []
+        with open('/var/lib/images/' + filename) as f:
+            record = [json.loads(line) for line in f]
+        data[filename] = record
+    return data
 
 
 if __name__ == "__main__":
