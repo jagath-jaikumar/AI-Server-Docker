@@ -72,6 +72,21 @@ services:
       - image_data:/var/lib/images:rw
 
 
+
+  nude_detection:
+    image: 'nude-detection'
+    container_name: nude_detection
+    build: ./MachineLearning/nude_detection
+    restart: on-failure
+    networks:
+      - network
+    depends_on:
+      - imagedb
+      - rabbitmq
+    volumes:
+      - image_data:/var/lib/images:rw
+
+
 networks:
   network: {}
 

@@ -5,7 +5,6 @@ ENV APP /app
 RUN mkdir $APP
 WORKDIR $APP
 
-EXPOSE 5000
 
 COPY requirements.txt .
 

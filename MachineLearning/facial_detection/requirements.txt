@@ -1,5 +1,5 @@
 pika
 requests
+numpy
 opencv-python
 image-encoder
-numpy

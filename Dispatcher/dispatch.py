@@ -1,6 +1,9 @@
 from flask import Flask, request, make_response, jsonify
 import requests
 import pika
+import time
+import atexit
+from apscheduler.schedulers.background import BackgroundScheduler
 
 
 
@@ -44,6 +47,14 @@ def get_data():
 
 
 
+
+
+scheduler = BackgroundScheduler()
+scheduler.add_job(func=post_to_image_queue,args=['already queued'], trigger="interval", seconds=55)
+scheduler.start()
+
+# Shut down the scheduler when exiting the app
+atexit.register(lambda: scheduler.shutdown())
 
 if __name__=="__main__":
     app.run(host='0.0.0.0')
