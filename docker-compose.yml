@@ -58,6 +58,20 @@ services:
 
 
 
+  facial_detection:
+    image: 'face-detection'
+    container_name: face_detection
+    build: ./MachineLearning/facial_detection
+    restart: on-failure
+    networks:
+      - network
+    depends_on:
+      - imagedb
+      - rabbitmq
+    volumes:
+      - image_data:/var/lib/images:rw
+
+
 networks:
   network: {}
 

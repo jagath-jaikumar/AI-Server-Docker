@@ -21,13 +21,16 @@ transform = transforms.Compose([
  std=[0.229, 0.224, 0.225]
  )])
 
-
+def get_image(fpath):
+    with open(fpath) as f:
+        record = [json.loads(line) for line in f]
+    img = decode(record[0]["image"])
+    return img
 
 def predict(fpath):
-    data = {}
-    with open(fpath) as json_file:
-        data = json.load(json_file)
-    img = decode(data["image"])
+    img = get_image(fpath)
+
+
     img_t = transform(img)
     batch_t = torch.unsqueeze(img_t, 0)
     out = alexnet(batch_t)
@@ -50,5 +53,5 @@ def predict(fpath):
 ################ pika
 if __name__ == "__main__":
     from pika_listener import QueueListener
-    Q = QueueListener(predict)
+    Q = QueueListener(predict, 'imageq_obj')
     Q.run()

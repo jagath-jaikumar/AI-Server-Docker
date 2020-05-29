@@ -1,0 +1,5 @@
+pika
+requests
+opencv-python
+image-encoder
+numpy
