@@ -53,6 +53,19 @@ services:
       - imagedb
       - rabbitmq
 
+  reader:
+    image: 'reader'
+    container_name: reader
+    build: ./Reader/
+    ports:
+      - "5001:5001"
+    networks:
+      - network
+    restart: on-failure
+    depends_on:
+      - imagedb
+    volumes:
+      - image_data:/var/lib/images:rw
 
   object_detection:
     image: 'obj-detection'

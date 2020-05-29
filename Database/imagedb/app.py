@@ -42,18 +42,6 @@ def add_data():
 
 
 
-@app.route("/get", methods = ["GET"])
-def get_data():
-    files = os.listdir('/var/lib/images/')
-    data = {}
-    for filename in files:
-        record = []
-        with open('/var/lib/images/' + filename) as f:
-            record = [json.loads(line) for line in f]
-        data[filename] = record
-    return data
-
-
 if __name__ == "__main__":
     app.run(host='0.0.0.0')
 
