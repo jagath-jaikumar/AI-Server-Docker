@@ -24,6 +24,11 @@ def save_dispatch():
             post_to_image_queue(metadata_file)
             return make_response(jsonify({"status":"queued", "file":metadata_file}), 200)
 
+        if k == "text":
+            metadata_file = requests.post('http://textdb:5000',json = packet).text
+            post_to_text_queue(metadata_file)
+            return make_response(jsonify({"status":"queued", "file":metadata_file}), 200)
+
     return make_response(jsonify({"status":"broken"}), 500)
 
 
@@ -35,22 +40,30 @@ def post_to_image_queue(body):
     print(" [x] Sent {}".format(body))
 
 
+def post_to_text_queue(body):
+    channel.exchange_declare(exchange='textpaths',exchange_type='fanout')
+    channel.basic_publish(exchange='textpaths', routing_key='ignored_for_fanout_exchanges', body=body)
+    print(" [x] Sent {}".format(body))
 
 
 
 
-@app.route("/get", methods = ["GET"])
-def get_data():
+@app.route("/get_images", methods = ["GET"])
+def get_data_images():
     data = requests.get('http://imagedb:5000/get')
     return data.text
 
 
-
+@app.route("/get_text", methods = ["GET"])
+def get_data_text():
+    data = requests.get('http://textdb:5000/get')
+    return data.text
 
 
 
 scheduler = BackgroundScheduler()
 scheduler.add_job(func=post_to_image_queue,args=['already queued'], trigger="interval", seconds=55)
+scheduler.add_job(func=post_to_text_queue,args=['already queued'], trigger="interval", seconds=55)
 scheduler.start()
 
 # Shut down the scheduler when exiting the app

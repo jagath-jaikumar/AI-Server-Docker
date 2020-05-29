@@ -1,6 +1,7 @@
 version: "3"
 
 services:
+
   rabbitmq:
     image: rabbitmq
     command: rabbitmq-server
@@ -27,6 +28,16 @@ services:
     volumes:
       - image_data:/var/lib/images:rw
 
+
+  textdb:
+    image: 'textdb'
+    build: ./Database/textdb/
+    container_name: textdb
+    ports: ["5000"]
+    networks:
+      - network
+    volumes:
+      - text_data:/var/lib/text:rw
 
 
   dispatch:
@@ -87,12 +98,27 @@ services:
       - image_data:/var/lib/images:rw
 
 
+  toxic_comments:
+    image: 'toxic_comments'
+    container_name: toxic_comments
+    build: ./MachineLearning/toxic_comments
+    restart: on-failure
+    networks:
+      - network
+    depends_on:
+      - textdb
+      - rabbitmq
+    volumes:
+      - text_data:/var/lib/text:rw
+
+
 networks:
   network: {}
 
 
 volumes:
   image_data:
+  text_data:
 
 
 # powered by bee

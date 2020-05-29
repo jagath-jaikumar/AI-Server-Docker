@@ -5,12 +5,37 @@ import json
 
 
 endpoint1 = "http://localhost:5000/"
-endpoint2 = "http://localhost:5000/get"
+endpoint2 = "http://localhost:5000/get_images"
 
 
 fname = "dog.jpg"
 
 r = requests.post(endpoint1,json={"fname":fname,"image":encode(fname)})
+print(r.text)
+
+
+time.sleep(5)
+
+
+r = requests.get(endpoint2)
+res = json.loads(r.text)
+
+
+for k,v in res.items():
+    for data in v:
+        if not "image" in data.keys():
+            print(data)
+
+
+
+
+endpoint1 = "http://localhost:5000/"
+endpoint2 = "http://localhost:5000/get_text"
+
+
+fname = "sample_text"
+
+r = requests.post(endpoint1,json={"fname":fname,"text":"Hello World!"})
 print(r.text)
 
 
