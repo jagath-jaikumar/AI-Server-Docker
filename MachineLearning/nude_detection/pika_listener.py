@@ -3,7 +3,7 @@ import pika
 class QueueListener:
     def __init__(self, predict_function, qn):
         connection = pika.BlockingConnection(
-            pika.ConnectionParameters(host='rabbitmq'))
+            pika.ConnectionParameters(host='rabbitmq', heartbeat=0))
         self.channel = connection.channel()
 
         self.channel.exchange_declare(exchange='fpaths', exchange_type='fanout')

@@ -32,4 +32,4 @@ COPY . /workspace
 
 EXPOSE 5000
 
-CMD python toxic_comments.py
+CMD [ "python3", "-u","toxic_comments.py" ]
