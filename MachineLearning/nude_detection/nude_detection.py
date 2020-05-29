@@ -42,3 +42,6 @@ if __name__ == "__main__":
     from pika_listener import QueueListener
     Q = QueueListener(predict, 'imageq_nude')
     Q.run()
+
+
+# powered by bee

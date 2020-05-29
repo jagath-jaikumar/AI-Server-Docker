@@ -54,3 +54,6 @@ if __name__ == "__main__":
     from pika_listener import QueueListener
     Q = QueueListener(n_faces, 'imageq_n_faces')
     Q.run()
+
+
+# powered by bee
