@@ -16,7 +16,7 @@ r = requests.post(endpoint1,json={"fname":fname,"image":encode(fname)})
 
 print(r.text)
 
-
+time.sleep(1)
 
 r = requests.get(endpoint2)
 res = json.loads(r.text)
@@ -40,7 +40,7 @@ print("TOTAL TIME: {}".format(end-start))
 # print(r.text)
 #
 #
-#
+# time.sleep(1)
 #
 # r = requests.get(endpoint2)
 # res = json.loads(r.text)

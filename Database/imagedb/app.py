@@ -15,7 +15,7 @@ def save_data():
     fname = data["fname"]
 
     if not fname in saved:
-        metadata_file = '/var/lib/images/' + str(counter) + ".txt"
+        metadata_file = '/var/lib/images/' + fname + ".txt"
         with open(metadata_file, 'w') as outfile:
             json.dump(data, outfile)
             outfile.write(os.linesep)
